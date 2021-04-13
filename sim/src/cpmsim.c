@@ -114,19 +114,19 @@
 
 /* Read/write macros */
 #define READ_BYTE(BASE, ADDR) (BASE)[ADDR]
-#define READ_WORD(BASE, ADDR) (((BASE)[ADDR]<<8) |	\
-			       (BASE)[(ADDR)+1])
-#define READ_LONG(BASE, ADDR) (((BASE)[ADDR]<<24) |	\
-			       ((BASE)[(ADDR)+1]<<16) |	\
-			       ((BASE)[(ADDR)+2]<<8) |	\
-			       (BASE)[(ADDR)+3])
+#define READ_WORD(BASE, ADDR) (((BASE)[ADDR]<<8) |      \
+                               (BASE)[(ADDR)+1])
+#define READ_LONG(BASE, ADDR) (((BASE)[ADDR]<<24) |     \
+                               ((BASE)[(ADDR)+1]<<16) | \
+                               ((BASE)[(ADDR)+2]<<8) |  \
+                               (BASE)[(ADDR)+3])
 
 #define WRITE_BYTE(BASE, ADDR, VAL) (BASE)[ADDR] = (VAL)&0xff
-#define WRITE_WORD(BASE, ADDR, VAL) (BASE)[ADDR] = ((VAL)>>8) & 0xff;	\
+#define WRITE_WORD(BASE, ADDR, VAL) (BASE)[ADDR] = ((VAL)>>8) & 0xff;   \
   (BASE)[(ADDR)+1] = (VAL)&0xff
-#define WRITE_LONG(BASE, ADDR, VAL) (BASE)[ADDR] = ((VAL)>>24) & 0xff;	\
-  (BASE)[(ADDR)+1] = ((VAL)>>16)&0xff;					\
-  (BASE)[(ADDR)+2] = ((VAL)>>8)&0xff;					\
+#define WRITE_LONG(BASE, ADDR, VAL) (BASE)[ADDR] = ((VAL)>>24) & 0xff;  \
+  (BASE)[(ADDR)+1] = ((VAL)>>16)&0xff;                                  \
+  (BASE)[(ADDR)+2] = ((VAL)>>8)&0xff;                                   \
   (BASE)[(ADDR)+3] = (VAL)&0xff
 
 
@@ -155,10 +155,10 @@ void get_user_input(void);
 
 
 /* Data */
-unsigned int g_quit = 0;			/* 1 if we want to quit */
-unsigned int g_nmi = 0;				/* 1 if nmi pending */
+unsigned int g_quit = 0;                        /* 1 if we want to quit */
+unsigned int g_nmi = 0;                         /* 1 if nmi pending */
 
-int g_MC6850_receive_data = -1;		/* Current value in input device */
+int g_MC6850_receive_data = -1;         /* Current value in input device */
 int g_MC6850_status = 2;                /* MC6850 status register */
 int g_MC6850_control = 0;               /* MC6850 control register */
 
@@ -167,11 +167,11 @@ int g_disk_size[16];
 int srecord = 0;
 int g_trace = 0;
 
-unsigned int g_int_controller_pending = 0;	/* list of pending interrupts */
-unsigned int g_int_controller_highest_int = 0;	/* Highest pending interrupt */
+unsigned int g_int_controller_pending = 0;      /* list of pending interrupts */
+unsigned int g_int_controller_highest_int = 0;  /* Highest pending interrupt */
 
-unsigned char g_rom[MAX_ROM+1];					/* ROM */
-unsigned char g_ram[MAX_RAM+1];					/* RAM */
+unsigned char g_rom[MAX_ROM+1];                                 /* ROM */
+unsigned char g_ram[MAX_RAM+1];                                 /* RAM */
 
 #ifdef RAMDISK
 unsigned char g_ramdisk[RAMDISK_SIZE];
@@ -209,7 +209,7 @@ void memdump(int start, int end)
   while(start < end)
     {
       if((i++ & 0x0f) == 0)
-	fprintf(stderr, "\r\n%08x:",start);
+        fprintf(stderr, "\r\n%08x:",start);
       fprintf(stderr, "%02x ", g_ram[start++]);
     }
 }
@@ -224,11 +224,11 @@ void termination_handler(int signum)
   for(i = 0; i < 16; i++)
     {
       if(g_disk_fds[i] != -1)
-	{
-	  lseek(g_disk_fds[i], 0, 0);
-	  lockf(g_disk_fds[i], F_ULOCK, 0);
-	  close(g_disk_fds[i]);
-	}
+        {
+          lseek(g_disk_fds[i], 0, 0);
+          lockf(g_disk_fds[i], F_ULOCK, 0);
+          close(g_disk_fds[i]);
+        }
     }
   //  fprintf(stderr, "\nFinal PC=%08x\n",m68k_get_reg(NULL, M68K_REG_PC));
 
@@ -275,10 +275,10 @@ void input_device_update(void)
     {
       g_MC6850_status |= 1;
       if((g_MC6850_control & 0x80) && !(g_MC6850_status & 0x80))
-	{
-	  int_controller_set(IRQ_MC6850);
-	  g_MC6850_status |= 0x80;
-	}
+        {
+          int_controller_set(IRQ_MC6850);
+          g_MC6850_status |= 0x80;
+        }
     }
 }
 
@@ -362,10 +362,10 @@ void disk_read(int sector)
   if(g_disk_drive == RAM_DRIVE)
     {
       if(sector > (sizeof(g_ramdisk)/128 - 128))
-	return;
+        return;
       g_disk_status = 0;
       for(i = 0; i < 128; i++)
-	WRITE_BYTE(g_ram, g_disk_dma+i, g_ramdisk[sector*128 + i]);
+        WRITE_BYTE(g_ram, g_disk_dma+i, g_ramdisk[sector*128 + i]);
       return;
     }
 #endif
@@ -387,7 +387,7 @@ void disk_read(int sector)
   if(g_trace)
     {
       if(sector == 7536)
-	memdump(0x500,0x600);
+        memdump(0x500,0x600);
       fprintf(stderr, "\r\n%08x:%dR\r\n", g_disk_dma, sector);
     }
 
@@ -420,10 +420,10 @@ void disk_write(int sector)
   if(g_disk_drive == RAM_DRIVE)
     {
       if(sector > (sizeof(g_ramdisk)/128 - 128))
-	return;
+        return;
       g_disk_status = 0;
       for(i = 0; i < 128; i++)
-	g_ramdisk[sector*128 + i] = READ_BYTE(g_ram, g_disk_dma+i);
+        g_ramdisk[sector*128 + i] = READ_BYTE(g_ram, g_disk_dma+i);
 
       return;
     }
@@ -438,7 +438,7 @@ void disk_write(int sector)
   count = 128;
   do {
     i = TEMP_FAILURE_RETRY(write(g_disk_fds[g_disk_drive],
-				 &g_ram[g_disk_dma+128-count], count)); 
+                                 &g_ram[g_disk_dma+128-count], count)); 
     if(i == -1)
       return;
     count -= i;
@@ -574,8 +574,8 @@ void cpu_write_long(unsigned int address, unsigned int value)
     case DISK_WRITE:
       disk_write(value);
       if(g_disk_status == -1)
-	fprintf(stderr, "\r\nwrite error: drive:%c  sector: %d\r\n",
-		g_disk_drive+'A', g_disk_sector);
+        fprintf(stderr, "\r\nwrite error: drive:%c  sector: %d\r\n",
+                g_disk_drive+'A', g_disk_sector);
       return;
     case DISK_FLUSH:
       disk_flush();
@@ -689,10 +689,10 @@ void trace(int pc)
   m68k_disassemble(buf, pc, M68K_CPU_TYPE_68000); 
 
   fprintf(stderr, "%06x:%s   A0:%06x A1:%06x A2:%06x A3:%06x\r\n", pc, buf,
-	  m68k_get_reg(NULL, M68K_REG_A0),
-	  m68k_get_reg(NULL, M68K_REG_A1),
-	  m68k_get_reg(NULL, M68K_REG_A2),
-	  m68k_get_reg(NULL, M68K_REG_A3));
+          m68k_get_reg(NULL, M68K_REG_A0),
+          m68k_get_reg(NULL, M68K_REG_A1),
+          m68k_get_reg(NULL, M68K_REG_A2),
+          m68k_get_reg(NULL, M68K_REG_A3));
 
   if(pc > 0x8000)
     termination_handler(0);
@@ -761,31 +761,31 @@ int main(int argc, char* argv[])
   while((c = getopt(argc, argv, "sta:b:")) != -1)
     {
       switch(c)
-	{
-	case 'a':
-	  open_disk(0, optarg, O_RDWR);
-	  break;
-	case 'b':
-	  open_disk(1, optarg, O_RDWR);
-	  break;
-	case 's':
-	  srecord = 1;
-	  break;
-	case 't':
-	  g_trace = 1;
-	  break;
-	case '?':
-	  if(optopt == 'a' || optopt == 'b')
-	    fprintf(stderr, "Option -%c requires an argument.\n", optopt);
-	  else if (isprint (optopt))
-	    fprintf (stderr, "Unknown option `-%c'.\n", optopt);
-	  else
-	    fprintf (stderr,
-		     "Unknown option character `\\x%x'.\n",
-		     optopt);
-	default:
-	  exit(1);
-	}
+        {
+        case 'a':
+          open_disk(0, optarg, O_RDWR);
+          break;
+        case 'b':
+          open_disk(1, optarg, O_RDWR);
+          break;
+        case 's':
+          srecord = 1;
+          break;
+        case 't':
+          g_trace = 1;
+          break;
+        case '?':
+          if(optopt == 'a' || optopt == 'b')
+            fprintf(stderr, "Option -%c requires an argument.\n", optopt);
+          else if (isprint (optopt))
+            fprintf (stderr, "Unknown option `-%c'.\n", optopt);
+          else
+            fprintf (stderr,
+                     "Unknown option character `\\x%x'.\n",
+                     optopt);
+        default:
+          exit(1);
+        }
     }
   open_disk(2, DISKC_FILENAME, O_RDWR);
   if(optind != argc)
@@ -832,7 +832,7 @@ int main(int argc, char* argv[])
   while(1)
     {
       if(g_trace)
-	trace( m68k_get_reg(NULL, M68K_REG_PC));
+        trace( m68k_get_reg(NULL, M68K_REG_PC));
 
       m68k_execute(g_trace ? 1 : 10000); // execute 10,000 MC68000 instructions
 
