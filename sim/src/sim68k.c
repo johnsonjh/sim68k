@@ -1,11 +1,13 @@
 /*
-  MC68000 simulation taylored to support CP/M-68K. It includes:
+  MC68000 simulation for CP/M-68K. 
 
-  16MB of memory. (Flat, function codes and address space types ignored.)
+  It includes:
 
-  Console I/O using a MC6850 like serial port with interrupts.
+  * 16MB of memory. (Flat, function codes and address space types ignored.)
 
-  Simulated disk system:
+  * Console I/O using a MC6850 like serial port with interrupts.
+
+  * Simulated disk system:
 
   I was going to just read a file system image into memory and map it into
   the unusable (in a MC68000) address space above the 16MB physical limit.
@@ -25,21 +27,23 @@
    Operation is simple: set the drive and DMA address and then write the
    sector number to the sector register. This write triggers the requested
    operation. The status of the operation can be determined by reading the
-   status register.
-   A zero indicates that no error occured.
+   status register. A zero indicates that no error occured.
 
    Note that these operations invoke read() and write() system calls directly
-   so that they will alter the image on the hard disk. KEEP BACKUPS!
+   so that they will alter the image on the hard disk.
 
-   In addition Linux will buffer the writes so they may note be really complete
-   for a while. The BIOS flush function invokes a fsync on all open files.
+   KEEP BACKUPS!
 
-   There are two options for booting CPM:
+   In addition Linux will buffer the writes so they may note be really
+   complete for a while. The BIOS flush function invokes a fsync on all
+   open files.
 
-   S-records: This loads CPM in two parts. The first is in cpm400.bin which
-   is created from the srecords in cpm400.sr. The second is in simbios.bin
-   which contains the BIOS. Both of these files must be binaries and not
-   srecords.
+   There are two options for booting CP/M:
+
+   S-records: This loads CP/M in two parts. The first is in cpm400.bin
+   which is created from the srecords in cpm400.s. The second is in
+   simbios.bin which contains the BIOS. Both of these files must be
+   binaries and not srecords.
    
    If you want to alter the bios, rebuild simbios.bin using:
 
@@ -48,12 +52,9 @@
 
    This option is requested using "-s" on the command line.
 
-   Boot track: A CPM loader is in the boot track of simulated drive C. 32K of
-   data is loaded from that file to memory starting at $400. This is the
-   default option.
-
-  Uses the example that came with the Musashi simulator as a skeleton to
-  build on.
+   Boot track: A CP/M loader is in the boot track of simulated drive C.
+   32K of data is loaded from that file to memory starting at $400. This
+   is the default option.
 
  */
 #include <stdio.h>
@@ -68,7 +69,6 @@
 #include <errno.h>
 #include "sim68k.h"
 #include "m68k.h"
-
 
 /* Memory-mapped IO ports */
 
@@ -106,11 +106,9 @@
 #define IRQ_NMI_DEVICE 7
 #define IRQ_MC6850     5
 
-
 /* ROM and RAM sizes */
 #define MAX_ROM 0           // all RAM
 #define MAX_RAM 0xffffff    // 16MB of RAM
-
 
 /* Read/write macros */
 #define READ_BYTE(BASE, ADDR) (BASE)[ADDR]
@@ -128,7 +126,6 @@
   (BASE)[(ADDR)+1] = ((VAL)>>16)&0xff;                                  \
   (BASE)[(ADDR)+2] = ((VAL)>>8)&0xff;                                   \
   (BASE)[(ADDR)+3] = (VAL)&0xff
-
 
 /* Prototypes */
 void exit_error(char* fmt, ...);
@@ -152,7 +149,6 @@ void int_controller_set(unsigned int value);
 void int_controller_clear(unsigned int value);
 
 void get_user_input(void);
-
 
 /* Data */
 unsigned int g_quit = 0;                        /* 1 if we want to quit */
@@ -179,9 +175,7 @@ unsigned char g_ramdisk[RAMDISK_SIZE];
 
 unsigned int g_fc;       /* Current function code from CPU */
 
-
-/* OS-dependant code to get a character from the user.
- */
+/* OS-dependant code to get a character from the user.  */
 
 #include <termios.h>
 #include <unistd.h>
@@ -214,7 +208,6 @@ void memdump(int start, int end)
     }
 }
 
-
 void termination_handler(int signum)
 {
   int i;
@@ -242,7 +235,6 @@ void exit_error(char* fmt, ...)
 
   tcsetattr(STDIN_FILENO, TCSANOW, &oldattr);  // restore terminal settings
 
-
   va_start(args, fmt);
   vfprintf(stderr, fmt, args);
   va_end(args);
@@ -250,7 +242,6 @@ void exit_error(char* fmt, ...)
 
   exit(EXIT_FAILURE);
 }
-
 
 /* Implementation for the MC6850 like device
 
@@ -305,7 +296,6 @@ int MC6850_status_read()
 {
   return g_MC6850_status;
 }
-
 
 /* Implementation for the output device */
 
@@ -486,8 +476,6 @@ void init_disks(void)
     g_disk_fds[i] = -1;
 }
 
-
-
 /* Read data from RAM */
 unsigned int cpu_read_byte(unsigned int address)
 {
@@ -530,7 +518,6 @@ unsigned int cpu_read_long(unsigned int address)
     }
   return READ_LONG(g_ram, address);
 }
-
 
 /* Write data to RAM or a device */
 void cpu_write_byte(unsigned int address, unsigned int value)
@@ -617,9 +604,6 @@ int cpu_irq_ack(int level)
   return M68K_INT_ACK_SPURIOUS;
 }
 
-
-
-
 /* Implementation for the NMI device */
 void nmi_device_reset(void)
 {
@@ -641,8 +625,6 @@ int nmi_device_ack(void)
   int_controller_clear(IRQ_NMI_DEVICE);
   return M68K_INT_ACK_AUTOVECTOR;
 }
-
-
 
 /* Implementation for the interrupt controller */
 void int_controller_set(unsigned int value)
@@ -744,7 +726,6 @@ void load_boot_track(void)
   i =read(g_disk_fds[2], &g_ram[0x400], 32*1024);
   fprintf(stderr, "Read %d bytes from boot track\n", i);
 
-
   // Now put in values for the stack and PC vectors
   WRITE_LONG(g_ram, 0, 0xfe0000);   // SP
   WRITE_LONG(g_ram, 4, 0x400);      // PC
@@ -796,7 +777,6 @@ int main(int argc, char* argv[])
   else
     load_boot_track();
 
-
   /*
     Install a handler for various termination events so that we have the
     opportunity to write the simulated file systems back. Plus clean up
@@ -823,7 +803,6 @@ int main(int argc, char* argv[])
   newattr.c_cc[VMIN] = 1;       // block until at least one char available
   newattr.c_cc[VTIME] = 0;
   tcsetattr(STDIN_FILENO, TCSANOW, &newattr);
-
 
   m68k_pulse_reset();
   MC6850_reset();

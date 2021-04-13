@@ -3,27 +3,33 @@
 /* ======================================================================== */
 /*
  *                                  MUSASHI
- *                                Version 3.3
  *
  * A portable Motorola M680x0 processor emulation engine.
- * Copyright 1998-2001 Karl Stenerud.  All rights reserved.
  *
- * This code may be freely used for non-commercial purposes as long as this
- * copyright notice remains unaltered in the source code and any binary files
- * containing this code in compiled form.
+ * Copyright (C) 1998-2020 Karl Stenerud
  *
- * All other lisencing terms must be negotiated with the author
- * (Karl Stenerud).
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
  *
- * The latest version of this code can be obtained at:
- * http://kstenerud.cjb.net
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ *
  */
-
-
 
 #ifndef M68KCONF__HEADER
 #define M68KCONF__HEADER
-
 
 /* Configuration switches.
  * Use OPT_SPECIFY_HANDLER for configuration options that allow callbacks.
@@ -34,7 +40,6 @@
 #define OPT_OFF             0
 #define OPT_ON              1
 #define OPT_SPECIFY_HANDLER 2
-
 
 /* ======================================================================== */
 /* ============================== MAME STUFF ============================== */
@@ -51,8 +56,6 @@
 #include "m68kmame.h"
 #else
 
-
-
 /* ======================================================================== */
 /* ============================= CONFIGURATION ============================ */
 /* ======================================================================== */
@@ -62,13 +65,11 @@
 #define M68K_EMULATE_EC020          OPT_OFF
 #define M68K_EMULATE_020            OPT_OFF
 
-
 /* If on, the CPU will call m68k_read_immediate_xx() for immediate addressing
  * and m68k_read_pcrelative_xx() for PC-relative addressing.
  * If off, all read requests from the CPU will be redirected to m68k_read_xx()
  */
 #define M68K_SEPARATE_READS         OPT_OFF
-
 
 /* If on, CPU will call the interrupt acknowledge callback when it services an
  * interrupt.
@@ -78,25 +79,21 @@
 #define M68K_EMULATE_INT_ACK        OPT_SPECIFY_HANDLER
 #define M68K_INT_ACK_CALLBACK(A)    cpu_irq_ack(A)
 
-
 /* If on, CPU will call the breakpoint acknowledge callback when it encounters
  * a breakpoint instruction and it is running a 68010+.
  */
 #define M68K_EMULATE_BKPT_ACK       OPT_OFF
 #define M68K_BKPT_ACK_CALLBACK()    your_bkpt_ack_handler_function()
 
-
 /* If on, the CPU will monitor the trace flags and take trace exceptions
  */
 #define M68K_EMULATE_TRACE          OPT_OFF
-
 
 /* If on, CPU will call the output reset callback when it encounters a reset
  * instruction.
  */
 #define M68K_EMULATE_RESET          OPT_SPECIFY_HANDLER
 #define M68K_RESET_CALLBACK()       cpu_pulse_reset()
-
 
 /* If on, CPU will call the set fc callback on every memory access to
  * differentiate between user/supervisor, program/data access like a real
@@ -107,7 +104,6 @@
 #define M68K_EMULATE_FC             OPT_SPECIFY_HANDLER
 #define M68K_SET_FC_CALLBACK(A)     cpu_set_fc(A)
 
-
 /* If on, CPU will call the pc changed callback when it changes the PC by a
  * large value.  This allows host programs to be nicer when it comes to
  * fetching immediate data and instructions on a banked memory system.
@@ -115,24 +111,20 @@
 #define M68K_MONITOR_PC             OPT_OFF
 #define M68K_SET_PC_CALLBACK(A)     your_pc_changed_handler_function(A)
 
-
 /* If on, CPU will call the instruction hook callback before every
  * instruction.
  */
 #define M68K_INSTRUCTION_HOOK       OPT_OFF
 #define M68K_INSTRUCTION_CALLBACK() your_instruction_hook_function()
 
-
 /* If on, the CPU will emulate the 4-byte prefetch queue of a real 68000 */
 #define M68K_EMULATE_PREFETCH       OPT_ON
-
 
 /* If on, the CPU will generate address error exceptions if it tries to
  * access a word or longword at an odd address.
  * NOTE: Do not enable this!  It is not working!
  */
 #define M68K_EMULATE_ADDRESS_ERROR  OPT_OFF
-
 
 /* Turn on to enable logging of illegal instruction calls.
  * M68K_LOG_FILEHANDLE must be #defined to a stdio file stream.
@@ -142,19 +134,16 @@
 #define M68K_LOG_1010_1111          OPT_OFF
 #define M68K_LOG_FILEHANDLE         some_file_handle
 
-
 /* ----------------------------- COMPATIBILITY ---------------------------- */
 
 /* The following options set optimizations that violate the current ANSI
  * standard, but will be compliant under the forthcoming C9X standard.
  */
 
-
 /* If on, the emulation core will use 64-bit integers to speed up some
  * operations.
 */
 #define M68K_USE_64_BIT  OPT_ON
-
 
 /* Set to your compiler's static inline keyword to enable it, or
  * set it to blank to disable it.
@@ -165,7 +154,6 @@
 #define INLINE static __inline__
 #endif /* INLINE */
 
-
 /* If your environment requires special prefixes for system callback functions
  * such as the argument to qsort(), then set them here or in the makefile.
  */
@@ -175,8 +163,7 @@
 
 #endif /* M68K_COMPILE_FOR_MAME */
 
-
-#include "sim.h"
+#include "sim68k.h"
 
 #define m68k_read_memory_8(A) cpu_read_byte(A)
 #define m68k_read_memory_16(A) cpu_read_word(A)
@@ -185,7 +172,6 @@
 #define m68k_write_memory_8(A, V) cpu_write_byte(A, V)
 #define m68k_write_memory_16(A, V) cpu_write_word(A, V)
 #define m68k_write_memory_32(A, V) cpu_write_long(A, V)
-
 
 /* ======================================================================== */
 /* ============================== END OF FILE ============================= */
