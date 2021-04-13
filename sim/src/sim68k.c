@@ -66,7 +66,7 @@
 #define __USE_GNU
 #include <unistd.h>
 #include <errno.h>
-#include "sim.h"
+#include "sim68k.h"
 #include "m68k.h"
 
 
