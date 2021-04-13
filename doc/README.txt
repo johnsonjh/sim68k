@@ -5,7 +5,7 @@
    This is a work in progress but might be good enough for others to play
    with.
 
-   This is built on the framework provided by the [20]Musashi MC68000
+   This is built on the framework provided by the Musashi MC68000
    simulator. In addition to simulating a MC68000 the only hardware simulated
    is a console port and the disk system. The code, and especially the
    console I/O assumes it is running under Linux.
