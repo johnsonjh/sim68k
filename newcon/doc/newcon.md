@@ -86,14 +86,14 @@ buffer will consist of the following:
 ```
 
 You can enable this function by changeing the extern decleration of
-"def\_dma" to match the symbol used in your bios. Note the symbol in
-your bios would be \_def\_dma because of the leading underscore added
-by the C compiler.  You then define INIT before compiling.
+"def_dma" to match the symbol used in your bios. Note the symbol in
+your bios would be \_def_dma because of the leading underscore added
+by the C compiler. You then define INIT before compiling.
 
 ## Installation
 
 After compiling to a .o file you must replace the conbdos.o
-file in CPMLIB. First make a backup copy of CPMLIB. 
+file in CPMLIB. First make a backup copy of CPMLIB.
 
 Then:
 
@@ -113,4 +113,4 @@ improved command line recall.
 
 ## Original author
 
-David W. Schultz        CIS [73157,2242]
+David W. Schultz CIS [73157,2242]
