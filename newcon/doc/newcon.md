@@ -2,16 +2,16 @@
 
 ## Introduction
 
-NEWCON.C is a replacement for the CONBDOS.O portion of CP/M-68K (tm DRI).
-To use it you must have a copy of CPMLIB ( library of object files makeing
-up the BDOS and CCP of CP/M-68K ) and a copy of the object for your BIOS.
-It is necessary to relink these files to produce a CPM.REL file.
+NEWCON.C is a replacement for the CONBDOS.O portion of CP/M-68K (tm DRI). To use
+it you must have a copy of CPMLIB ( library of object files makeing up the BDOS
+and CCP of CP/M-68K ) and a copy of the object for your BIOS. It is necessary to
+relink these files to produce a CPM.REL file.
 
 NEWCON.C provides an enhanced version of BDOS function #10 - read console
-buffer. All other console functions are unchanged. The enhancments are
-several new editing functions and command line recall. These functions
-behave as much like those in CP/M+ as was possible without actually
-having a CP/M+ system to use.
+buffer. All other console functions are unchanged. The enhancments are several
+new editing functions and command line recall. These functions behave as much
+like those in CP/M+ as was possible without actually having a CP/M+ system to
+use.
 
 ## Functions
 
@@ -66,11 +66,10 @@ having a CP/M+ system to use.
                 the cursor to the beginning of the line.
 ```
 
-As an option you can enable another feature of the function #10 call if
-you can access the location where your BIOS stores its DMA pointer.
-If you call function #10 with register D1 = 0, then the function will
-assume that an initialized buffer is present at the DMA address. The
-buffer will consist of the following:
+As an option you can enable another feature of the function #10 call if you can
+access the location where your BIOS stores its DMA pointer. If you call function
+#10 with register D1 = 0, then the function will assume that an initialized
+buffer is present at the DMA address. The buffer will consist of the following:
 
 ```text
         mx  nc  c1  c2  c3 .... 0
@@ -85,15 +84,15 @@ buffer will consist of the following:
                 edit them as usual.
 ```
 
-You can enable this function by changeing the extern decleration of
-"def_dma" to match the symbol used in your bios. Note the symbol in
-your bios would be \_def_dma because of the leading underscore added
-by the C compiler. You then define INIT before compiling.
+You can enable this function by changeing the extern decleration of "def_dma" to
+match the symbol used in your bios. Note the symbol in your bios would be
+\_def_dma because of the leading underscore added by the C compiler. You then
+define INIT before compiling.
 
 ## Installation
 
-After compiling to a .o file you must replace the conbdos.o
-file in CPMLIB. First make a backup copy of CPMLIB.
+After compiling to a .o file you must replace the conbdos.o file in CPMLIB.
+First make a backup copy of CPMLIB.
 
 Then:
 
@@ -107,9 +106,9 @@ Then:
 
 Then relink as described in the System Guide
 
-The best feature of this program is that now you can change it to do
-anything that you want. You can add more editing commands or an
-improved command line recall.
+The best feature of this program is that now you can change it to do anything
+that you want. You can add more editing commands or an improved command line
+recall.
 
 ## Original author
 
